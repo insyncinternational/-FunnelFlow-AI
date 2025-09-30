@@ -142,6 +142,23 @@ const DashboardPage = () => {
     }
   };
 
+  const updateFunnel = (funnel) => {
+    try {
+      const updatedFunnel = {
+        ...funnel,
+        lastModified: new Date().toISOString(),
+        status: 'updated'
+      };
+      
+      localStorage.setItem(`funnel_${funnel.id}`, JSON.stringify(updatedFunnel));
+      refreshFunnels();
+      alert(`Funnel "${funnel.name}" has been updated successfully!`);
+    } catch (error) {
+      console.error('Error updating funnel:', error);
+      alert('Error updating funnel. Please try again.');
+    }
+  };
+
   return (
     <div className="dashboard-page">
       <div className="container">
@@ -294,6 +311,13 @@ const DashboardPage = () => {
                         className="btn btn-sm btn-primary"
                       >
                         👁️ Preview
+                      </button>
+                      <button 
+                        onClick={() => updateFunnel(funnel)}
+                        className="btn btn-sm btn-success"
+                        title="Update Funnel"
+                      >
+                        🔄 Update
                       </button>
                       <button 
                         onClick={() => duplicateFunnel(funnel)}

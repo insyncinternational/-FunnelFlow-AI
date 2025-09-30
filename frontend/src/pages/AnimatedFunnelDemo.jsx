@@ -7,7 +7,10 @@ const AnimatedFunnelDemo = () => {
       id: 1,
       title: "What's your main goal?",
       description: "Help us understand what you're looking to achieve",
-      video: "https://res.cloudinary.com/domnocrwi/video/upload/v1759220570/Joneast_exbb7f.mp4",
+      videos: [
+        "https://res.cloudinary.com/domnocrwi/video/upload/v1759220570/Joneast_exbb7f.mp4",
+        "https://res.cloudinary.com/domnocrwi/video/upload/v1752741407/intro.mp4"
+      ],
       options: [
         {
           id: "goal-1",
@@ -33,6 +36,10 @@ const AnimatedFunnelDemo = () => {
       id: 2,
       title: "What's your business size?",
       description: "This helps us tailor our recommendations to your needs",
+      videos: [
+        "https://res.cloudinary.com/domnocrwi/video/upload/v1752741407/intro.mp4",
+        "https://res.cloudinary.com/domnocrwi/video/upload/v1759220570/Joneast_exbb7f.mp4"
+      ],
       options: [
         {
           id: "size-1",

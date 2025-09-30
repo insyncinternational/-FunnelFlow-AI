@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const LandingPage = () => {
   const [activeFeature, setActiveFeature] = useState(0);
   const [selectedStep, setSelectedStep] = useState(null);
   const [showStepModal, setShowStepModal] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  
+  const videos = [
+    "https://res.cloudinary.com/domnocrwi/video/upload/v1753695869/intromobile.mp4",
+    "https://res.cloudinary.com/domnocrwi/video/upload/v1759220570/Joneast_exbb7f.mp4"
+  ];
+
+  // Auto-advance videos every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentVideoIndex(prev => (prev + 1) % videos.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [videos.length]);
 
   const steps = [
     {
@@ -250,16 +265,23 @@ const LandingPage = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <div className="video-container">
-              <video 
-                src="https://res.cloudinary.com/domnocrwi/video/upload/v1759220570/Joneast_exbb7f.mp4"
-                className="hero-video-player"
-                controls
-                playsInline
-                muted
-                autoPlay
-                loop
-                poster="https://res.cloudinary.com/domnocrwi/image/upload/v1759220570/video-poster.jpg"
-              />
+              <AnimatePresence mode="wait">
+                <motion.video
+                  key={currentVideoIndex}
+                  src={videos[currentVideoIndex]}
+                  className="hero-video-player"
+                  controls
+                  playsInline
+                  muted
+                  autoPlay
+                  loop
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                />
+              </AnimatePresence>
+              
               <div className="video-overlay">
                 <div className="video-branding">
                   <div className="brand-logo">🚀 FunnelFlow AI</div>
@@ -269,6 +291,31 @@ const LandingPage = () => {
                     </div>
                     <div className="time-display">0:08 / 0:14</div>
                   </div>
+                </div>
+                
+                {/* Video Navigation Controls */}
+                <div className="video-controls">
+                  <button 
+                    className="video-nav-btn prev-btn"
+                    onClick={() => setCurrentVideoIndex(prev => prev > 0 ? prev - 1 : videos.length - 1)}
+                  >
+                    ‹
+                  </button>
+                  <div className="video-indicators">
+                    {videos.map((_, index) => (
+                      <button
+                        key={index}
+                        className={`video-dot ${index === currentVideoIndex ? 'active' : ''}`}
+                        onClick={() => setCurrentVideoIndex(index)}
+                      />
+                    ))}
+                  </div>
+                  <button 
+                    className="video-nav-btn next-btn"
+                    onClick={() => setCurrentVideoIndex(prev => (prev + 1) % videos.length)}
+                  >
+                    ›
+                  </button>
                 </div>
               </div>
             </div>

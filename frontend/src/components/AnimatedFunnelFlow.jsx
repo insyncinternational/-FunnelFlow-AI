@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import './AnimatedFunnelFlow.css';
+import '../styles/AnimatedFunnelFlow.css';
 
 const AnimatedFunnelFlow = ({ steps = [], onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [answers, setAnswers] = useState({});
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   const handleOptionSelect = (option) => {
     if (isAnimating) return;
@@ -36,6 +37,33 @@ const AnimatedFunnelFlow = ({ steps = [], onComplete }) => {
       setSelectedOption(null);
     }
   };
+
+  const handleVideoChange = (direction) => {
+    if (!currentStepData.videos || currentStepData.videos.length <= 1) return;
+    
+    if (direction === 'next') {
+      setCurrentVideoIndex(prev => 
+        prev < currentStepData.videos.length - 1 ? prev + 1 : 0
+      );
+    } else {
+      setCurrentVideoIndex(prev => 
+        prev > 0 ? prev - 1 : currentStepData.videos.length - 1
+      );
+    }
+  };
+
+  // Auto-advance videos every 5 seconds
+  useEffect(() => {
+    if (!currentStepData.videos || currentStepData.videos.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentVideoIndex(prev => 
+        prev < currentStepData.videos.length - 1 ? prev + 1 : 0
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [currentStepData.videos]);
 
   const currentStepData = steps[currentStep];
 
@@ -74,6 +102,19 @@ const AnimatedFunnelFlow = ({ steps = [], onComplete }) => {
         </div>
       </div>
 
+      {/* Question Card - Moved Above Video */}
+      <motion.div
+        className="question-card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <h2 className="question-title">{currentStepData.title}</h2>
+        {currentStepData.description && (
+          <p className="question-description">{currentStepData.description}</p>
+        )}
+      </motion.div>
+
       {/* Video/Content Area */}
       <motion.div
         className="funnel-content"
@@ -81,21 +122,56 @@ const AnimatedFunnelFlow = ({ steps = [], onComplete }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {currentStepData.video && (
+        {(currentStepData.video || currentStepData.videos) && (
           <div className="video-container">
-            <video
-              src={currentStepData.video}
-              className="funnel-video"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
+            <AnimatePresence mode="wait">
+              <motion.video
+                key={currentStepData.videos ? currentStepData.videos[currentVideoIndex] : currentStepData.video}
+                src={currentStepData.videos ? currentStepData.videos[currentVideoIndex] : currentStepData.video}
+                className="funnel-video"
+                autoPlay
+                muted
+                loop
+                playsInline
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5 }}
+              />
+            </AnimatePresence>
+            
             <div className="video-overlay">
               <div className="unmute-prompt">
                 <div className="unmute-icon">🔊</div>
                 <span>UNMUTE ME</span>
               </div>
+              
+              {/* Video Navigation Controls */}
+              {currentStepData.videos && currentStepData.videos.length > 1 && (
+                <div className="video-controls">
+                  <button 
+                    className="video-nav-btn prev-btn"
+                    onClick={() => handleVideoChange('prev')}
+                  >
+                    ‹
+                  </button>
+                  <div className="video-indicators">
+                    {currentStepData.videos.map((_, index) => (
+                      <button
+                        key={index}
+                        className={`video-dot ${index === currentVideoIndex ? 'active' : ''}`}
+                        onClick={() => setCurrentVideoIndex(index)}
+                      />
+                    ))}
+                  </div>
+                  <button 
+                    className="video-nav-btn next-btn"
+                    onClick={() => handleVideoChange('next')}
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -108,19 +184,6 @@ const AnimatedFunnelFlow = ({ steps = [], onComplete }) => {
               className="funnel-image"
             />
           </div>
-        )}
-      </motion.div>
-
-      {/* Question Card */}
-      <motion.div
-        className="question-card"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
-        <h2 className="question-title">{currentStepData.title}</h2>
-        {currentStepData.description && (
-          <p className="question-description">{currentStepData.description}</p>
         )}
       </motion.div>
 
