@@ -341,6 +341,11 @@ const DashboardPage = () => {
               <h4>Account Settings</h4>
               <p>Manage your account and preferences</p>
             </Link>
+            <Link to="/animated-funnel" className="action-card">
+              <div className="action-icon">🎭</div>
+              <h4>Animated Funnel</h4>
+              <p>Experience our interactive funnel flow</p>
+            </Link>
           </div>
         </div>
       </div>

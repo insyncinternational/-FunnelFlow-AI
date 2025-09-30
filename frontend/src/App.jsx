@@ -15,6 +15,7 @@ import SettingsPage from './pages/SettingsPage';
 import BillingPage from './pages/BillingPage';
 import ProfilePage from './pages/ProfilePage';
 import TemplatesPage from './pages/TemplatesPage';
+import AnimatedFunnelDemo from './pages/AnimatedFunnelDemo';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Components
@@ -90,6 +91,11 @@ function App() {
             <Route path="/templates" element={
               <ProtectedRoute>
                 <TemplatesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/animated-funnel" element={
+              <ProtectedRoute>
+                <AnimatedFunnelDemo />
               </ProtectedRoute>
             } />
             
