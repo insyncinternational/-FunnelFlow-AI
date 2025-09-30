@@ -119,9 +119,11 @@
   aspect-ratio: 16/9;
   border-radius: 0.75rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  object-fit: contain;
+  object-fit: cover;
   min-height: 250px;
-  max-height: 350px;
+  max-height: 400px;
+  display: block;
+  margin: 0 auto;
 }
 
 .step-content {
@@ -404,7 +406,8 @@
   .step-video {
     max-width: 100%;
     min-height: 200px;
-    max-height: 280px;
+    max-height: 300px;
+    object-fit: cover;
   }
   
   .step-content {
@@ -465,6 +468,7 @@
     max-width: 100%;
     min-height: 180px;
     max-height: 250px;
+    object-fit: cover;
   }
   
   .preview-content {
